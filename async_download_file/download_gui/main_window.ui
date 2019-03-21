@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>830</width>
+    <height>677</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>url</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="urlLineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>400</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>分段数</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="segmentComboBox">
+        <property name="currentText">
+         <string>64</string>
+        </property>
+        <property name="currentIndex">
+         <number>4</number>
+        </property>
+        <item>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>10</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>32</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>64</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>128</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>256</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="label_5">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>保存路径</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="filePathLineEdit">
+        <property name="minimumSize">
+         <size>
+          <width>400</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="selectFilePathButton">
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>选择</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_6">
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>cookie(可选)</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTextEdit" name="cookieTextEdit"/>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_13">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>下载进度</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="minimumSize">
+         <size>
+          <width>400</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="speedLabel">
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="resetButton">
+        <property name="font">
+         <font>
+          <family>宋体</family>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>重置</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_18">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="downloadButton">
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>下载</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_19">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="closeButton">
+        <property name="styleSheet">
+         <string notr="true">font: 16pt &quot;宋体&quot;;
+color: rgb(0, 85, 255);</string>
+        </property>
+        <property name="text">
+         <string>关闭</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_20">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>830</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>selectFilePathButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>selectFilePath()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>658</x>
+     <y>113</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>703</x>
+     <y>30</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resetButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>resetParam()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>158</x>
+     <y>636</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>105</x>
+     <y>646</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>downloadButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>startDownload()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>421</x>
+     <y>637</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>437</x>
+     <y>646</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>closeWindow()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>647</x>
+     <y>621</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>727</x>
+     <y>613</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>urlLineEdit</sender>
+   <signal>editingFinished()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>changeUrlContent()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>434</x>
+     <y>45</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>450</x>
+     <y>24</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>segmentComboBox</sender>
+   <signal>currentIndexChanged(QString)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>segmentNumberChange()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>252</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>288</x>
+     <y>80</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>selectFilePath()</slot>
+  <slot>segmentNumberChange()</slot>
+  <slot>resetParam()</slot>
+  <slot>startDownload()</slot>
+  <slot>closeWindow()</slot>
+  <slot>changeUrlContent()</slot>
+ </slots>
+</ui>
