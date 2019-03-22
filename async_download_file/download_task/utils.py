@@ -90,6 +90,18 @@ def open_file_to_fd(filename):
     except Exception as e:
         logger.exception("open_file error:%s", e)
 
+
+def get_utf8_code(encode_format, content):
+    try:
+        if not encode_format:
+            encode_format = 'ISO-8859-1'
+        try:
+            return content.encode(encode_format).decode('utf-8')
+        except UnicodeEncodeError as e:
+            return content.encode('ISO-8859-1').decode('utf-8')
+    except:
+        logger.error("get utf-8 coding error", exc_info=True)
+
 if __name__ == "__main__":
     # url = "http://pic110.huitu.com/pic/20180925/1301968_20180925195933385080_0.jpg"
     url = "https://nodejs.org/dist/v10.13.0/node-v10.13.0-x64.msi"

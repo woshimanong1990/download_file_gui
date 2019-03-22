@@ -3,17 +3,20 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 from __future__ import print_function
 
-import concurrent
+import concurrent.futures
 import copy
 import functools
 import os
 import re
 import logging
 import asyncio
+import threading
 from urllib.parse import urlparse
+import time
 import random
 
 import aiohttp
+import requests
 
 from async_download_file.download_task import variables
 from async_download_file.download_task import utils
@@ -26,11 +29,13 @@ class DownloadPreviewException(Exception):
 
 
 class DownloadPreviewExecutor(object):
-    def __init__(self, session, url, custom_headers=None):
+    def __init__(self, session, url, custom_headers=None, loop=None, executor=None):
         self.session = session
         self._download_url = url
         self._custom_headers = custom_headers
         self._file_info = {}
+        self.loop = loop
+        self.executor = executor
 
     async def _get_file_info_request(self, url, request_method="head", custom_headers=None):
         if request_method not in ["head", "get"]:
@@ -43,10 +48,13 @@ class DownloadPreviewExecutor(object):
             if custom_headers is not None and isinstance(custom_headers, dict):
                 headers.update(custom_headers)
             request_obj = getattr(self.session, request_method)
-            response = await request_obj(url, headers=headers, allow_redirects=False)
-            if response.status // 100 == 4:
-                raise Exception("url:{} get error status_code:{} method:{}".format(url, response.status, request_method))
-            if response.status // 100 == 3:
+            response = await self.loop.run_in_executor(self.executor, functools.partial(request_obj, url,
+                                                                                        headers=headers,
+                                                                                        allow_redirects=False,
+                                                                                        timeout=30))
+            if response.status_code // 100 == 4:
+                raise Exception("url:{} get error status_code:{} method:{}".format(url, response.status_code, request_method))
+            if response.status_code // 100 == 3:
 
                 headers_content = response.headers
                 for key in headers_content:
@@ -68,7 +76,9 @@ class DownloadPreviewExecutor(object):
             if "Accept-Ranges" in headers_content:
                 accept_ranges = True
             if 'Content-Disposition' in headers_content:
-                tmp_file_name = utils.get_file_name_from_disposition(headers_content["Content-Disposition"])
+                encode_format = response.encoding or response.apparent_encoding
+                # print('==============', response.encoding, response.apparent_encoding)
+                tmp_file_name = utils.get_file_name_from_disposition(utils.get_utf8_code(encode_format, headers_content["Content-Disposition"]))
                 if tmp_file_name:
                     filename = tmp_file_name
             if "Content-Length" not in headers_content:
@@ -119,6 +129,7 @@ class DownloadPreviewExecutor(object):
                 "accept_ranges": accept_ranges,
                 "url": self._download_url
             }
+            print(self._file_info)
         except DownloadPreviewException as e:
             raise
         except:
@@ -181,15 +192,26 @@ class DownloadSegment(object):
             self._update_status(variables.TaskStatus.DONE)
 
     def pause(self):
-        if self._task is None:
+        if self._task is not None:
             self._task.cancel()
             self._task = None
 
     def done(self):
         pass
 
-    async def update_download_info(self, new_download_file_length):
+    def update_download_info(self, new_download_file_length):
         self._current_position += new_download_file_length
+
+    def get_request_content_and_write_file(self, headers):
+        res = self.session.get(self.url, headers=headers, stream=True, timeout=60*60*5)
+        start_position = self._current_position
+        with os.fdopen(self.fd, "rb+") as f:
+            for chunk in res.iter_content(1024):
+                self.lock.acquire()
+                utils.write_to_file(f, start_position, chunk)
+                self.lock.release()
+                self.update_download_info(len(chunk))
+                start_position += len(chunk)
 
     async def fetch(self, origin_url):
         headers = copy.deepcopy(variables.COMMON_HEADS)
@@ -199,32 +221,13 @@ class DownloadSegment(object):
 
         if isinstance(self._custom_headers, dict) and self._custom_headers:
             headers.update(self._custom_headers)
-        f = await self.loop.run_in_executor(self.executor, functools.partial(os.fdopen, self.fd, "rb+"))
-        stream_reader = None
         try:
-            start_position = self._current_position
-            async with self.session.get(self.url, headers=headers) as response:
-                stream_reader = response.content
-                while True:
-                    chunk = await stream_reader.read(1024)
-                    if not chunk:
-                        if self._current_position < self._end_position:
-                            logger.error("not chunk :%d, %d", self._start_position, self._end_position)
-                            raise Exception("get not enough content")
-                        break
-                    async with self.lock:
-                        await self.loop.run_in_executor(None, functools.partial(utils.write_to_file, f, start_position,
-                                                                                chunk))
-                        await self.update_download_info(len(chunk))
-                        start_position += len(chunk)
-
+            await self.loop.run_in_executor(self.executor, functools.partial(self.get_request_content_and_write_file, headers))
         except Exception as e:
             logger.error("get error when downloading:%s", e, exc_info=True)
             self._update_status(variables.TaskStatus.ERROR)
         else:
             self._update_status(variables.TaskStatus.DONE)
-        finally:
-            await self.loop.run_in_executor(self.executor, functools.partial(os.close, self.fd))
 
     @property
     def start_position(self):
@@ -259,21 +262,20 @@ class DownloadTask(object):
         self._download_objects = []
         self.main_fd = None
         self._file_size = 0
-        self.lock = asyncio.Lock()
+        self.lock = threading.Lock()
         self._status = variables.TaskStatus.CREATED
         self._task = None
         self.init_env()
 
     def init_env(self):
         if self.executor is None:
-            self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=5)
+            self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=self.segment_number)
         if self.request_session is None:
-            # timeout = aiohttp.ClientTimeout(total=60 * 100)
-            timeout = aiohttp.ClientTimeout(total=60*60*6)
-            self.request_session = aiohttp.ClientSession(timeout=timeout)
+            self.request_session = requests.Session()
         if self.file_info_request_executor is None:
             self.file_info_request_executor = DownloadPreviewExecutor(self.request_session, self.url,
-                                                                      self.custom_headers)
+                                                                      self.custom_headers, loop=self.loop,
+                                                                      executor=self.executor)
 
     def create_file(self, file_path):
 
@@ -320,14 +322,25 @@ class DownloadTask(object):
                                            headers=self.custom_headers)
             self._download_objects.append(download_obj)
 
+    def _start_task(self, task):
+        task.start()
+        time.sleep(1)
+
     async def _start_task_async(self):
         for t in self._download_objects:
             t.start()
             await asyncio.sleep(random.randint(1, 5))
 
-
     def start_task_one_by_one(self):
+        # with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        #     start_sequence = [executor.submit(self._start_task, t) for t in self._download_objects]
+        #     for _ in concurrent.futures.as_completed(start_sequence):
+        #         pass
         asyncio.ensure_future(self._start_task_async(), loop=self.loop)
+
+        # for t in self._download_objects:
+        #     t.start()
+        #     time.sleep(1)
 
     def start(self):
         if self._status == variables.TaskStatus.DELETE:
