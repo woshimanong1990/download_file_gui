@@ -11,6 +11,7 @@ import re
 import logging
 import asyncio
 from urllib.parse import urlparse
+import random
 
 import aiohttp
 
@@ -319,12 +320,21 @@ class DownloadTask(object):
                                            headers=self.custom_headers)
             self._download_objects.append(download_obj)
 
+    async def _start_task_async(self):
+        for t in self._download_objects:
+            t.start()
+            await asyncio.sleep(random.randint(1, 5))
+
+
+    def start_task_one_by_one(self):
+        asyncio.ensure_future(self._start_task_async(), loop=self.loop)
+
     def start(self):
         if self._status == variables.TaskStatus.DELETE:
             return
         if self._status == variables.TaskStatus.PAUSE:
-            [_.start() for _ in self._download_objects]
             self.update_status(variables.TaskStatus.WORKING)
+            self.start_task_one_by_one()
             return
         self.update_status(variables.TaskStatus.WORKING)
         if self._task is None:
@@ -355,7 +365,7 @@ class DownloadTask(object):
                 self.update_status(variables.TaskStatus.ERROR, "创建文件失败")
                 return
             self.create_segment_list(fd)
-            [_.start() for _ in self._download_objects]
+            self.start_task_one_by_one()
         except DownloadPreviewException as e:
             logger.error("download error", exc_info=True)
             self.update_status(variables.TaskStatus.ERROR, "获取文件信息失败")

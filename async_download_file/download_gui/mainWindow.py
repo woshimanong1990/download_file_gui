@@ -76,7 +76,11 @@ class UpdateProgressBarThread(QThread):
         download_pecent = int(last_file_size/file_size*100)
         self.update_progress_signal.emit(self.current_task_id, (download_pecent, speed))
         if status in [DownloadStatus.ERROR.name, DownloadStatus.DONE.name]:
-            self.show_task_status_signal.emit(self.current_task_id, status)
+            if status == DownloadStatus.DONE.name and download_pecent != 100:
+                # TODO: 任务状态是完成，但是文件大小不对，没有报错，不知道什么原因
+                self.show_task_status_signal.emit(self.current_task_id, DownloadStatus.ERROR.name)
+            else:
+                self.show_task_status_signal.emit(self.current_task_id, status)
 
 
 class CustomMainWindow(QMainWindow):
