@@ -128,3 +128,4 @@ async_download_file_venv/
 async_download_file/error.log
 async_download_file/image/
 .idea/
+.vscode/
